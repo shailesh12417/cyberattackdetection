@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+artifacts/*.joblib
+artifacts/*.json
+data/*.csv

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cyber Attack Detection Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 32px; color: #0f172a; }
+    h1, h2 { margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+    th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+    th { background: #e2e8f0; }
+    .tag { display: inline-block; padding: 6px 10px; background: #dbeafe; border-radius: 999px; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Cyber Attack Detection Report</h1>
+  <p><strong>Dataset:</strong> sample | <strong>Selected Model:</strong> random_forest</p>
+  <p><strong>Target Column:</strong> label | <strong>Train/Test:</strong> 10 / 5</p>
+  <h2>Attack Categories</h2>
+  <p><span class='tag'>dos</span><span class='tag'>normal</span><span class='tag'>probe</span><span class='tag'>r2l</span><span class='tag'>u2r</span></p>
+  <h2>Model Comparison</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Accuracy</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1-Score</th>
+        <th>ROC-AUC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>random_forest</td><td>0.8</td><td>0.7</td><td>0.8</td><td>0.7333</td><td>1.0</td></tr><tr><td>decision_tree</td><td>0.4</td><td>0.2</td><td>0.4</td><td>0.2667</td><td>0.625</td></tr><tr><td>logistic_regression</td><td>0.8</td><td>0.7</td><td>0.8</td><td>0.7333</td><td>1.0</td></tr><tr><td>svm</td><td>0.8</td><td>0.7</td><td>0.8</td><td>0.7333</td><td>0.15</td></tr><tr><td>ann</td><td>0.8</td><td>0.7</td><td>0.8</td><td>0.7333</td><td>1.0</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

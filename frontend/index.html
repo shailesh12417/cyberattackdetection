@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="AI-powered cybersecurity detection platform with ML inference and real-time threat analysis." />
+  <title>CyberGuard — AI Attack Detection Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <canvas id="particlesCanvas"></canvas>
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      </div>
+      <span class="brand-text">CyberGuard</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard" id="navDashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-page="analysis" id="navAnalysis">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+        </svg>
+        <span>Analysis</span>
+      </button>
+      <button class="nav-item" data-page="predictions" id="navPredictions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        <span>Predictions</span>
+      </button>
+      <button class="nav-item" data-page="investigation" id="navInvestigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <span>Investigation</span>
+      </button>
+      <button class="nav-item" data-page="benchmark" id="navBenchmark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10" />
+          <line x1="12" y1="20" x2="12" y2="4" />
+          <line x1="6" y1="20" x2="6" y2="14" />
+        </svg>
+        <span>Benchmark</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item" id="logoutBtn" aria-label="Logout" style="color: var(--danger);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span>Logout</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+        <span class="theme-label">Theme</span>
+      </button>
+      <button class="nav-item collapse-btn" id="collapseBtn" aria-label="Toggle sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="11 17 6 12 11 7" />
+          <polyline points="18 17 13 12 18 7" />
+        </svg>
+        <span>Collapse</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </button>
+      <div class="topbar-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Real-time threat overview and system health</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="status-pills">
+          <span class="pill" id="healthPill">
+            <span class="pill-dot"></span>
+            <span id="healthStatus">Checking...</span>
+          </span>
+          <span class="pill" id="modelPill">
+            <span class="pill-dot"></span>
+            <span id="modelStatus">Checking...</span>
+          </span>
+          <span class="pill" id="llmPill">
+            <span class="pill-dot"></span>
+            <span id="llmStatus">Checking...</span>
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== PAGE: DASHBOARD ===== -->
+    <section class="page active" id="pageDashboard">
+      <div class="hero-banner">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+          <p class="eyebrow">ML-Driven Network Security</p>
+          <h2>Cyber Attack Detection Platform</h2>
+          <p class="hero-copy">FastAPI backend, multi-model benchmarking, and AI-assisted triage for production-style
+            cyber defense.</p>
+          <div class="hero-btns">
+            <button id="loadSampleBtn" class="btn btn-primary btn-glow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Load Sample Traffic
+            </button>
+            <button id="scenarioBtn" class="btn btn-secondary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              Load Attack Scenario
+            </button>
+            <button id="trainBtn" class="btn btn-outline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="16 18 22 12 16 6" />
+                <polyline points="8 6 2 12 8 18" />
+              </svg>
+              Prepare Model
+            </button>
+            <button id="liveMonitorBtn" class="btn btn-ghost">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v10" />
+                <path d="M18.4 4.6l-4.4 4.4" />
+                <path d="M2 12h10" />
+                <path d="M4.6 18.4l4.4-4.4" />
+                <path d="M12 22v-10" />
+                <path d="M5.6 5.6l4.4 4.4" />
+                <path d="M22 12h-10" />
+                <path d="M19.4 19.4l-4.4-4.4" />
+              </svg>
+              Live Monitor: Off
+            </button>
+            <button id="resetMetricsBtn" class="btn btn-ghost" title="Clear all dashboard data">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M19 6h-2V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H5c-1.1 0-2 .9-2 2v1h18V8c0-1.1-.9-2-2-2zm-6 0h-2V4h2v2zM5 20c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V10H5v10z" />
+              </svg>
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards-row">
+        <div class="stat-card">
+          <div class="stat-icon icon-total">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+          </div>
+          <span class="stat-label">Total Records</span>
+          <strong class="stat-value" id="totalRecords">0</strong>
+          <div class="sparkline-wrap"><canvas id="sparkTotal"></canvas></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-malicious">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
+          <span class="stat-label">Malicious</span>
+          <strong class="stat-value" id="maliciousRecords">0</strong>
+          <div class="sparkline-wrap"><canvas id="sparkMalicious"></canvas></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-benign">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <span class="stat-label">Benign</span>
+          <strong class="stat-value" id="benignRecords">0</strong>
+          <div class="sparkline-wrap"><canvas id="sparkBenign"></canvas></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-severity">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <span class="stat-label">Highest Severity</span>
+          <strong class="stat-value" id="highestSeverity">—</strong>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h3>Attack Distribution</h3>
+          </div>
+          <div class="chart-container">
+            <canvas id="attackChart"></canvas>
+          </div>
+          <div id="distribution" class="distribution-badges" style="margin-top: 16px;"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Analyst Assistant</h3>
+            <span class="card-badge">AI</span>
+          </div>
+          <div id="assistantSummary" class="assistant-box">Run an analysis to generate an attack narrative.</div>
+          <ul id="remediationList" class="remediation-list"></ul>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card card-glow">
+          <div class="card-header">
+            <h3>Threat Radar</h3><span class="card-badge">Live</span>
+          </div>
+          <div class="chart-container"><canvas id="radarChart"></canvas></div>
+        </div>
+        <div class="card card-glow">
+          <div class="card-header">
+            <h3>Traffic Timeline</h3>
+          </div>
+          <div class="chart-container"><canvas id="timelineChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h3>Severity Breakdown</h3>
+          </div>
+          <div id="severityBreakdown" class="bar-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Confidence Bands</h3>
+          </div>
+          <div id="confidenceBands" class="bar-list"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Alerts</h3>
+        </div>
+        <div id="recentAlerts" class="alert-feed">
+          <p class="empty-state">No alerts yet — run an analysis to see results.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Live Activity</h3><span class="card-badge">Stream</span>
+        </div>
+        <div id="activityFeed" class="activity-feed">
+          <p class="empty-state">Activity will appear here when analysis runs.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: ANALYSIS ===== -->
+    <section class="page" id="pageAnalysis">
+      <div class="card">
+        <div class="card-header split">
+          <div>
+            <h3>Traffic Input</h3>
+            <p>Paste JSON records or upload a CSV for batch analysis.</p>
+          </div>
+          <div class="control-group">
+            <label class="field-label" for="datasetProfile">Dataset Profile</label>
+            <select id="datasetProfile" class="select-input">
+              <option value="custom">Custom</option>
+              <option value="sample">Sample</option>
+              <option value="nsl-kdd">NSL-KDD</option>
+              <option value="cicids2017">CICIDS2017</option>
+              <option value="unsw-nb15">UNSW-NB15</option>
+            </select>
+          </div>
+        </div>
+        <div class="upload-row">
+          <input id="csvFileInput" class="file-input" type="file" accept=".csv" />
+          <button id="analyzeCsvBtn" class="btn btn-outline" type="button">Analyze CSV</button>
+          <a id="htmlReportLink" class="btn btn-ghost" href="/api/v1/report/html" target="_blank" rel="noreferrer">Open
+            HTML Report</a>
+        </div>
+        <textarea id="trafficInput" class="code-input" spellcheck="false"
+          placeholder='[ { "duration": 0, "src_bytes": 181, ... } ]'></textarea>
+        <div class="form-actions">
+          <button id="analyzeBtn" class="btn btn-primary btn-glow btn-lg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Analyze Traffic
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: PREDICTIONS ===== -->
+    <section class="page" id="pagePredictions">
+      <div class="card">
+        <div class="card-header">
+          <h3>Per-Record Predictions</h3>
+          <p>Confidence, severity, and explainability for each flow.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Label</th>
+                <th>Confidence</th>
+                <th>Severity</th>
+                <th>Description</th>
+                <th>Top Probabilities</th>
+              </tr>
+            </thead>
+            <tbody id="predictionTable"></tbody>
+          </table>
+        </div>
+        <div id="paginationControls" class="pagination-controls"></div>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: INVESTIGATION ===== -->
+    <section class="page" id="pageInvestigation">
+      <div class="card card-highlight">
+        <div class="card-header">
+          <h3>Primary Incident</h3>
+        </div>
+        <div class="incident-hero">
+          <strong id="incidentHeadline">Run an analysis to generate an incident headline.</strong>
+          <p id="incidentNarrative">The system will summarize the dominant attack pattern here.</p>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h3>Top Risk Indicators</h3>
+          </div>
+          <div id="riskIndicators" class="signal-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>Immediate Actions</h3>
+          </div>
+          <ul id="incidentActions" class="action-list"></ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>Model Insight</h3>
+        </div>
+        <div id="modelInsight" class="insight-box">Analyze traffic to see what the model found most suspicious.</div>
+      </div>
+    </section>
+
+    <!-- ===== PAGE: BENCHMARK ===== -->
+    <section class="page" id="pageBenchmark">
+      <div class="card">
+        <div class="card-header">
+          <h3>Model Benchmark</h3>
+          <p>Side-by-side comparison of ML and DL candidates.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Accuracy</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1</th>
+                <th>ROC-AUC</th>
+              </tr>
+            </thead>
+            <tbody id="benchmarkTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <span>CyberGuard v1.0 — AI Attack Detection Platform</span>
+      <span class="footer-badge"><span class="pulse-dot"></span> Powered by ML</span>
+    </footer>
+  </main>
+
+  <!-- FLOATING CHAT BUTTON -->
+  <button class="chat-fab" id="chatFab" aria-label="Open chat">
+    <svg class="fab-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    </svg>
+    <svg class="fab-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+    <span class="fab-pulse"></span>
+  </button>
+
+  <!-- FLOATING CHAT PANEL -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-panel-header">
+      <div>
+        <strong>Security Assistant</strong>
+        <span class="chat-mode" id="chatContextText">General cyber guidance</span>
+      </div>
+      <div class="chat-panel-actions">
+        <button id="clearChatBtn" class="btn btn-ghost btn-sm">Clear</button>
+      </div>
+    </div>
+    <div class="prompt-chips">
+      <button class="chip" type="button" data-prompt="What is a DoS attack?">What is DoS?</button>
+      <button class="chip" type="button" data-prompt="Explain the latest high severity alert.">Explain alert</button>
+      <button class="chip" type="button" data-prompt="How should I mitigate suspicious traffic?">Mitigation</button>
+      <button class="chip" type="button" data-prompt="How does this model make predictions?">Model info</button>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-composer">
+      <textarea id="chatInput" class="chat-textarea" spellcheck="true"
+        placeholder="Ask about attacks, model, or mitigation..." rows="2"></textarea>
+      <button id="sendChatBtn" class="btn btn-primary chat-send" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- CACHE-BUSTED SCRIPTS -->
+  <script src="assets/app.js?v=1.0.1"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script>
+    VANTA.NET({
+      el: 'body',
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xffcd3f,
+      backgroundColor: 0x0
+    })
+  </script>
+</body>
+
+</html>
